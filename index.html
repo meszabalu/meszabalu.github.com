@@ -20,7 +20,7 @@
     <header>
       <div class="inner">
         <h1>meszabalu.github.com</h1>
-        <h2>Statikus weboldal</h2>
+        <h2>Mészáros Balázs oldala</h2>
         <a href="https://github.com/meszabalu" class="button"><small>Follow me on</small>GitHub</a>
       </div>
     </header>
@@ -28,37 +28,121 @@
     <div id="content-wrapper">
       <div class="inner clearfix">
         <section id="main-content">
-          <h3>Welcome to GitHub Pages.</h3>
+          <h3>1. házi feladat összefoglalója</h3>
+            <p>A feladat egy olyan statikus oldal létrehozása, ahol egy billentyű lenyomásának az eseményét kell lekezeni javascripttel. A leütött karaktert ki kell írni a képenyőre, továbbá egy gomb lenyomásának hatására az összes eddig leütött karaktert ki kell írni.</p>
+            <p>A feladat megoldásának első változata <a href="hazi1_v1.html">itt</a> érhető el. A feladat megoldását egy egyszerű html oldal elkészítésével kezdtem, ez lesz az alapja mindhárom változatnak: </p>
+            <pre><code>
+&lt!DOCTYPE html&gt
+&lthtml&gt
+  &lthead&gt
+    &ltmeta charset='utf-8'&gt
+    &lttitle&gtHázi feladat első változat&lt/title&gt
+    &ltscript type="text/javascript" src="javascripts/hazi1_v1.js"&gt&lt/script&gt
+  &lt/head&gt
+  &ltbody&gt
+    &ltdiv&gt
+      &ltp&gtMost leütött billentyű:&ltspan id="current"&gt&lt/span&gt&lt/p&gt
+      &ltbutton id="writefull"&gtMit ütöttem le eddig?&lt/button&gt
+      &ltp id="fulltext"&gt&lt/p&gt
+    &lt/div&gt
+  &lt/body&gt
+&lt/html&gt
+            </code></pre>
+            <p>Az oldalhoz külső hivatkozásként a következő javascript kódot rendeltem hozzá: </p>
+            <pre><code>
+var bt;
+var fulltextContainer;
+var currentContainer;
+var allText; //ebbe tároljuk az összed eddig leütött billentyűkaraktert
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+function keyPress(ev){
+  var ch = String.fromCharCode(ev.keyCode);
+  currentContainer.innerHTML = ch;
+  allText += ch;
+}
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+function displayText(){
+  fulltextContainer.innerHTML = allText;
+}
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+function init(){
+  bt = document.getElementById('writefull');
+  fulltextContainer = document.getElementById('fulltext');
+  currentContainer = document.getElementById('current');
+  allText = "";
+  document.onkeypress = keyPress;
+  bt.onclick = displayText;
+}
 
-<h3>Designer Templates</h3>
+document.addEventListener('DOMContentLoaded', init);
+            </code></pre>
+            <p>A javascript kód négy változó definiálásával kezdődik. Az első a nyomógomb <abbr title="Document Object Model">DOM</abbr> elem eléréséhez szolgál, a második (fulltextContainer) a teljes szöveg megjelenítéséhez használt html elem azonosítására, a harmadik az aktuálisan leütött karakter megjelenítéséhez használt tároló elem eléréséhez, még az utolsó változó a teljes szöveg tárolásához kell. Ezeket a változókat a <code>init()</code> függvényen belül látjuk el kezdeti értékekkel. Ezen függvényen belül továbbá a <code>document.onkeypress = keyPress;</code> és a <code>bt.onclick = displayText;</code> sorokkal megadjuk, hogy mely függvények kerüljenek végrehajtásra, ha megnyomunk egy gombot a billenytyűzeten, vagy ha lenyomjuk a "Mit ütöttem le eddig?" feliratú billenyűt.</p>
+            <p>A <code>keyPress(ev)</code> függvény akkor kerül végrehajtásra, ha megnyomtunk egy gombot a billenyűzeten. Ekkor az <code>ev</code> azonosítóval ellátott esemény objektum adódik át automatikusan a függvénynek. Ebből a <code>ch</code> változóba tároljuk le a leütött billenytyű kódjának megfelelő karaktert. Ezt a karatert tartalomként hozzárendeljük az aktuális karaktert tároló elemhez (tehát megjelenítjük az oldalon), továbbá hozzáfűzzük az eddig leütött karaktereket tároló változóhoz. Ezt a változót használja fel a <code>displayText()</code> függvény, ami megjeleníti a rendelkezésre álló <abbr title="Document Object Model">DOM</abbr> elem segítségével az eddig leütött karaktereket.</p>
+            <p>További feladat volt még ugyanezen feladat megoldása namespacelt objektummal és privát műveletekkel is. Először az első változatot ismertetem, ami <a href="hazi1_v2.html">itt</a> elérhető. Ennek a javascript kódja a következő: </p>
+            <pre><code>
+var handlerObj = {
+  bt : null,
+  fulltextContainer : null,
+  currentContainer : null,
+  allText : null,
+  keyPress : function(ev){
+    var ch = String.fromCharCode(ev.keyCode);
+    handlerObj.currentContainer.innerHTML = ch;
+    handlerObj.allText += ch;
+  },
+  displayText : function(){
+    handlerObj.fulltextContainer.innerHTML = handlerObj.allText;
+  },
+  init : function(){
+    handlerObj.bt = document.getElementById('writefull');
+    handlerObj.fulltextContainer = document.getElementById('fulltext');
+    handlerObj.currentContainer = document.getElementById('current');
+    handlerObj.allText = "";
+    document.onkeypress = handlerObj.keyPress;
+    handlerObj.bt.onclick = handlerObj.displayText;
+  }
+};
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+document.addEventListener('DOMContentLoaded', handlerObj.init);
+            </code></pre>
+            <p>A kód látszólag nagyon hasonló, azonban több különbséget is tartalmaz. Itt a definiált változók (amelyek szerepe ugyanaz, mint az első változatnál) egy objektum adattagjai, és a függvények is hasonlóan. Fontos kiemelni, hogy a függvényeken belül hivatkozunk a "saját" <code>handlerObj</code> objektum változóira, és metódusaira is, azonban ezt nem a <code>this</code> kulcsszóval tesszük. Ennek oka az, hogy a definiált (és később meghívott) függvényeken belül a this operátor értéke a globális objektum, nekünk viszont a <code>handlerObj</code> adattagjaira van szükségünk.</p>
+            <p>Végül következzen a feladat utolsó változata, amelyben privát adattagokat és metódusokat használunk. Ez a változat <a href="hazi1_v3.html">itt</a> érhető el, és ugyanazt a statikus html oldalt használja mint az előző kettő változat, azonban a javascript kód a következő:</p>
+            <pre><code>
+var handlerObj = ( function () {
+  "use strict";
+  var bt;
+  var fulltextContainer;
+  var currentContainer;
+  var allText;
 
-<h3>Rather Drive Stick?</h3>
+  function keyPress(ev){
+    var ch = String.fromCharCode(ev.keyCode);
+    currentContainer.innerHTML = ch;
+    allText += ch;
+  }
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+  function displayText(){
+    fulltextContainer.innerHTML = allText;
+  }
 
-<h3>Authors and Contributors</h3>
+  function init(){
+    bt = document.getElementById('writefull');
+    fulltextContainer = document.getElementById('fulltext');
+    currentContainer = document.getElementById('current');
+    allText = "";
+    document.onkeypress = keyPress;
+    bt.onclick = displayText;
+  }
+  return init;
+})();
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+document.addEventListener('DOMContentLoaded', handlerObj);
+            </code></pre>
+            <p>A váltózókat és a függvényeket egy másik függvényen belül definiáljuk. A külső függvény végén az utolsó parancs a <code>return init;</code>. Ez azt jelenti, hogy a függvény, amit definiáltunk végrehajtásakor az <code>init</code> függvényre mutató referenciával tér vissza. Ennek előnye az, hogy a változók és a <code>keyPress(ev) displayText()</code> függvények úgymond "rejtve" maradnak, tehát nem lehet majd meghívni őket a függvény blokkján kívülről. Az azonosító nélküli függvény definiálásakor meg is hívjuk rögtön, visszatérési értékét pedig a <code>handlerObj</code> nevű változóba tároljuk. Tehát ez a változó fogja tartalmazni az <code>init</code> függvényre mutató referenciát. Ezt a változót a html tartalom betöltődésének az eseményéhez <code>document.addEventListener('DOMContentLoaded', handlerObj);</code> sorral adjuk hozzá. Tehát amikor a statikus oldalunk betöltődik, akkor végrehajtódik az <code>init</code> függvény, megtörténnek a változóhozzárendelések, és beállítódik, hogy melyik eseményre melyik belső függvény hajtódik végre, azonban ezek a függvények kívülről továbbra is elérhetetlenek maradnak.</p>
 
-<h3>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
         </section>
 
         <aside id="sidebar">
-
-
           <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.</p>
         </aside>
       </div>
