@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>QUnit test a fizzbuzzbizz függvényhez</title>
+
+    <link rel="stylesheet" href="css/qunit-1.11.0.css">
+    <script src="js/qunit-1.11.0.js"></script>
+    <script src="js/fizzbuzzbizz_test.js"></script>
+
+    <script>
+    test("Fizzbuzzbizz alap értékek tesztelése", function() {
+      equal(fbb(3), "fizz", "Ennek itt fizznek kell lennie");
+      equal(fbb(5), "buzz", "Ennek itt buzznak kell lennie");
+      equal(fbb(7), "bizz", "Ennek itt bizznek kell lennie");
+      equal(fbb(15), "fizzbuzz", "Ennek itt fizzbuzznak kell lennie");
+      equal(fbb(22), 22, "Itt két számot hasonlítunk össze.");
+      equal(fbb(103), "103", "Itt pedig a második paraméter a 103 string");
+      equal(fbb(75), "fizzbuzz", "ha minden igaz, akkor ez is jó.");
+    });
+    test("Ugyanezen értékek tesztelése deepEquallal", function() {
+      deepEqual(fbb(3), "fizz", "Ennek itt fizznek kell lennie");
+      deepEqual(fbb(5), "buzz", "Ennek itt buzznak kell lennie");
+      deepEqual(fbb(7), "bizz", "Ennek itt bizznek kell lennie");
+      deepEqual(fbb(15), "fizzbuzz", "Ennek itt fizzbuzznak kell lennie");
+      deepEqual(fbb(22), 22, "Itt két számot hasonlítunk össze.");
+      deepEqual(fbb(103), "103", "Itt pedig a második paraméter a 103 string");
+      deepEqual(fbb(75), "fizzbuzz", "ha minden igaz, akkor ez is jó.");
+    });
+    </script>
+  </head>
+  <body>
+    <div id="qunit"></div>
+  </body>
+</html>
