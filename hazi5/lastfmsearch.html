@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8'>
+		<title>Last fm kereső</title>
+
+		<script type="text/javascript" src="src/lastfm_search.js"></script>
+		<script type="text/javascript" src="src/jquery-1.9.1.min.js"></script>
+	</head>
+	<body>
+		<div id="cnr_search">
+			<label for="in_artist">Előadó neve: </label><input type="text" id="in_artist" /><button id="btn_search">Keresés!</button>
+		</div>
+		<div id="cnr_result"></div>
+		<script type="text/javascript">
+			function listAllArtist(data){
+				$("#cnr_result").empty();
+				$.each(data.results.artistmatches.artist, function(index,element){
+					var html = "<div class='artist'>";
+					html += "<h3>"+element.name+"</h3>";
+					html += "<p><a href='"+element.url+"'>Link</a></p>";
+					html += "<p>"+element.listeners+" people listen this.</p>";
+					html += "<p>Get more info <a href='#' onclick='expandArtist(\""+element.name+"\", displayInfo)'>here</a></p>";
+					html += "</div>";
+					$("#cnr_result").append(html);
+				});
+			}
+			function displayInfo(data){
+				$("#cnr_result").empty();
+				var html = "";
+				imgurl = data.artist.image[0]['#text'];
+				html += "<img src='"+imgurl+"' />";
+				html += "<p>Artist name: "+data.artist.name+"</p>";
+				html += "<p>Listeners: "+data.artist.stats.listeners+"</p>";
+				html += "<p>Play count: "+data.artist.stats.playcount+"</p>";
+				html += "<p>URL: <a href='"+data.artist.url+"'>"+data.artist.url+"</a></p>";
+				$("#cnr_result").append(html);
+			}
+			$("#btn_search").click(function(ev){
+				ev.preventDefault();
+				searchArtist( $("#in_artist").val(), listAllArtist );
+			});
+		</script>
+	</body>
+</html>
